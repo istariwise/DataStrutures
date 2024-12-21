@@ -7,12 +7,7 @@ addq 負責將節點加入佇列，deleteq 負責從佇列中取出節點。
 
 根節點加入佇列，然後逐層遍歷。
 每取出一個節點時，將其左、右子節點（若存在）加入佇列。
-動態記憶體管理:
-
-使用 malloc 建立節點，記得在真實應用中搭配 free 回收記憶體（此範例未包含釋放邏輯）。
-這樣的實作可以完整展示階序走訪的過程！
 */
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -47,7 +42,7 @@ treePointer deleteq() {
     return queue[front];
 }
 
-// 階序走訪函式
+// 階序走訪函式（並釋放節點記憶體）
 void levelOrder(treePointer ptr) {
     if (!ptr) return; // 空樹直接返回
 
@@ -59,8 +54,12 @@ void levelOrder(treePointer ptr) {
 
         printf("%d ", ptr->data); // 輸出節點資料
 
-        if (ptr->leftChild) addq(ptr->leftChild); // 加入左子節點
-        if (ptr->rightChild) addq(ptr->rightChild); // 加入右子節點
+        // 如果有左或右子節點，加入佇列
+        if (ptr->leftChild) addq(ptr->leftChild);
+        if (ptr->rightChild) addq(ptr->rightChild);
+
+        // 釋放該節點的記憶體
+        free(ptr);
     }
 }
 
